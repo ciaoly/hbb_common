@@ -493,7 +493,8 @@ pub const VER_TYPE_RUSTDESK_CLIENT: &str = "rustdesk-client";
 pub const VER_TYPE_RUSTDESK_SERVER: &str = "rustdesk-server";
 
 pub fn version_check_request(typ: String) -> (VersionCheckRequest, String) {
-    const URL: &str = "https://api.rustdesk.com/version/latest";
+    // LAN DEPLOYMENT: Changed to localhost to prevent external network requests
+    const URL: &str = "http://127.0.0.1:21114/version/latest";
 
     use sysinfo::System;
     let system = System::new();

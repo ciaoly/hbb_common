@@ -69,7 +69,18 @@ lazy_static::lazy_static! {
     pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = {
+        let mut m = HashMap::new();
+        // LAN DEPLOYMENT: Disable auto-update and register-device by default
+        m.insert("allow-auto-update".to_owned(), "N".to_owned());
+        m.insert("enable-check-update".to_owned(), "N".to_owned());
+        m.insert("register-device".to_owned(), "N".to_owned());
+        // LAN DEPLOYMENT: Set default servers to localhost
+        m.insert("relay-server".to_owned(), "127.0.0.1:21117".to_owned());
+        m.insert("custom-rendezvous-server".to_owned(), "127.0.0.1:21116".to_owned());
+        m.insert("api-server".to_owned(), "http://127.0.0.1:21114".to_owned());
+        RwLock::new(m)
+    };
 }
 
 #[cfg(target_os = "android")]
@@ -106,7 +117,8 @@ const CHARS: &[char] = &[
     'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 ];
 
-pub const RENDEZVOUS_SERVERS: &[&str] = &["rs-ny.rustdesk.com"];
+// LAN DEPLOYMENT: Changed to localhost to prevent external network requests
+pub const RENDEZVOUS_SERVERS: &[&str] = &["127.0.0.1"];
 pub const RS_PUB_KEY: &str = "OeVuKk5nlHiXp+APNn0Y3pC1Iwpwn44JGqrQCsWqmBw=";
 
 pub const RENDEZVOUS_PORT: i32 = 21116;
